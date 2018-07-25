@@ -43,19 +43,13 @@ class DrawerContentViewController: UIViewController {
         super.viewWillAppear(animated)
 
         // You must wait until viewWillAppear -or- later in the view controller lifecycle in order to get a reference to Pulley via self.parent for customization.
-
-        // UIFeedbackGenerator is only available iOS 10+. Since Pulley works back to iOS 9, the .feedbackGenerator property is "Any" and managed internally as a feedback generator.
-        if #available(iOS 10.0, *) {
-            let feedbackGenerator = UISelectionFeedbackGenerator()
-            self.pulleyViewController?.feedbackGenerator = feedbackGenerator
-        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         // The bounce here is optional, but it's done automatically after appearance as a demonstration.
-        Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(bounceDrawer), userInfo: nil, repeats: false)
+//        Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(bounceDrawer), userInfo: nil, repeats: false)
     }
 
     @objc fileprivate func bounceDrawer() {
