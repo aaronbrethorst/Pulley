@@ -492,7 +492,6 @@ public final class PulleyViewController: UIViewController, PulleyDrawerViewContr
     private var heightOfOpenDrawer: CGFloat {
         let safeAreaTopInset: CGFloat
 
-        // abxoxo
         if #available(iOS 11.0, *) {
             safeAreaTopInset = view.safeAreaInsets.top
         }
@@ -500,7 +499,13 @@ public final class PulleyViewController: UIViewController, PulleyDrawerViewContr
             safeAreaTopInset = 20.0
         }
 
-        return view.bounds.height - topInset - safeAreaTopInset
+        var height = view.bounds.height - topInset - safeAreaTopInset
+
+        if currentDisplayMode == .leftSide {
+            height -= panelInsetTop
+        }
+
+        return height
     }
 
     // MARK: - Display Mode
@@ -1341,7 +1346,7 @@ extension PulleyViewController {
 
         if supportedPositions.contains(.open) {
             // Layout scrollview
-            drawerScrollView.frame = CGRect(x: pulleySafeAreaInsets.left + panelInsetLeft, y: panelInsetTop + pulleySafeAreaInsets.top, width: panelWidth, height: heightOfOpenDrawer - panelInsetTop)
+            drawerScrollView.frame = CGRect(x: pulleySafeAreaInsets.left + panelInsetLeft, y: panelInsetTop + pulleySafeAreaInsets.top, width: panelWidth, height: heightOfOpenDrawer)
         }
         else {
             // Layout scrollview
