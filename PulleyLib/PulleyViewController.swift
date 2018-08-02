@@ -571,7 +571,7 @@ public final class PulleyViewController: UIViewController, PulleyDrawerViewContr
 
     public func prepareFeedbackGenerator() {
         if feedbackGenerator == nil {
-            feedbackGenerator = UIImpactFeedbackGenerator(style: UIImpactFeedbackStyle.medium)
+            feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
         }
 
         feedbackGenerator?.prepare()
@@ -624,7 +624,7 @@ public final class PulleyViewController: UIViewController, PulleyDrawerViewContr
 
     // MARK: PulleyDrawerViewControllerDelegate implementation for nested Pulley view controllers in drawers. Implemented here, rather than an extension because overriding extensions in subclasses isn't good practice. Some developers want to subclass Pulley and customize these behaviors, so we'll move them here.
 
-    open func collapsedDrawerHeight(bottomSafeArea: CGFloat) -> CGFloat {
+    public func collapsedDrawerHeight(bottomSafeArea: CGFloat) -> CGFloat {
         if let drawerContent = drawerContentViewController as? PulleyDrawerViewControllerDelegate,
             let collapsedHeight = drawerContent.collapsedDrawerHeight?(bottomSafeArea: bottomSafeArea) {
             return collapsedHeight
@@ -634,7 +634,7 @@ public final class PulleyViewController: UIViewController, PulleyDrawerViewContr
         }
     }
 
-    open func partialRevealDrawerHeight(bottomSafeArea: CGFloat) -> CGFloat {
+    public func partialRevealDrawerHeight(bottomSafeArea: CGFloat) -> CGFloat {
         if let drawerContent = drawerContentViewController as? PulleyDrawerViewControllerDelegate,
             let partialRevealHeight = drawerContent.partialRevealDrawerHeight?(bottomSafeArea: bottomSafeArea) {
             return partialRevealHeight
@@ -644,7 +644,7 @@ public final class PulleyViewController: UIViewController, PulleyDrawerViewContr
         }
     }
 
-    open func supportedDrawerPositions() -> [PulleyPosition] {
+    public func supportedDrawerPositions() -> [PulleyPosition] {
         if let drawerContent = drawerContentViewController as? PulleyDrawerViewControllerDelegate,
             let supportedPositions = drawerContent.supportedDrawerPositions?() {
             return supportedPositions
@@ -654,19 +654,19 @@ public final class PulleyViewController: UIViewController, PulleyDrawerViewContr
         }
     }
 
-    open func drawerPositionDidChange(drawer: PulleyViewController, bottomSafeArea: CGFloat) {
+    public func drawerPositionDidChange(drawer: PulleyViewController, bottomSafeArea: CGFloat) {
         if let drawerContent = drawerContentViewController as? PulleyDrawerViewControllerDelegate {
             drawerContent.drawerPositionDidChange?(drawer: drawer, bottomSafeArea: bottomSafeArea)
         }
     }
 
-    open func makeUIAdjustmentsForFullscreen(progress: CGFloat, bottomSafeArea: CGFloat) {
+    public func makeUIAdjustmentsForFullscreen(progress: CGFloat, bottomSafeArea: CGFloat) {
         if let drawerContent = drawerContentViewController as? PulleyDrawerViewControllerDelegate {
             drawerContent.makeUIAdjustmentsForFullscreen?(progress: progress, bottomSafeArea: bottomSafeArea)
         }
     }
 
-    open func drawerChangedDistanceFromBottom(drawer: PulleyViewController, distance: CGFloat, bottomSafeArea: CGFloat) {
+    public func drawerChangedDistanceFromBottom(drawer: PulleyViewController, distance: CGFloat, bottomSafeArea: CGFloat) {
         if let drawerVCCompliant = drawerContentViewController as? PulleyDrawerViewControllerDelegate {
             drawerVCCompliant.drawerChangedDistanceFromBottom?(drawer: drawer, distance: distance, bottomSafeArea: bottomSafeArea)
         }
@@ -780,7 +780,7 @@ extension PulleyViewController {
         feedbackGenerator = nil
     }
 
-    override open func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         // Make sure our view controller views are subviews of the right view (Resolves #21 issue with changing the presentation context)
@@ -825,7 +825,7 @@ extension PulleyViewController {
         setDrawerPosition(position: drawerPosition, animated: false)
     }
 
-    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
         coordinator.notifyWhenInteractionChanges { [weak self] _ in
@@ -908,7 +908,7 @@ extension PulleyViewController {
 
     // MARK: Propagate child view controller style / status bar presentation based on drawer state
 
-    override open var childViewControllerForStatusBarStyle: UIViewController? {
+    public override var childViewControllerForStatusBarStyle: UIViewController? {
         if drawerPosition == .open {
             return drawerContentViewController
         }
@@ -916,7 +916,7 @@ extension PulleyViewController {
         return primaryContentViewController
     }
 
-    override open var childViewControllerForStatusBarHidden: UIViewController? {
+    public override var childViewControllerForStatusBarHidden: UIViewController? {
         if drawerPosition == .open {
             return drawerContentViewController
         }
@@ -1306,9 +1306,7 @@ extension PulleyViewController {
         return drawerStops
     }
 
-    /**
-     Mask backgroundDimmingView layer to avoid drawer background being darkened.
-     */
+    /// Mask backgroundDimmingView layer to avoid drawer background being darkened.
     private func maskBackgroundDimmingView() {
         let cutoutHeight = 2 * drawerCornerRadius
         let maskHeight = backgroundDimmingView.bounds.size.height - cutoutHeight - drawerScrollView.contentSize.height
@@ -1369,8 +1367,9 @@ extension PulleyViewController {
             drawerScrollView.contentInsetAdjustmentBehavior = .scrollableAxes
         } else {
             automaticallyAdjustsScrollViewInsets = false
-            drawerScrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomLayoutGuide.length, right: 0)
-            drawerScrollView.scrollIndicatorInsets =  UIEdgeInsets(top: 0, left: 0, bottom: bottomLayoutGuide.length, right: 0) // (usefull if visible..)
+            let insets = UIEdgeInsets(top: 0, left: 0, bottom: bottomLayoutGuide.length, right: 0)
+            drawerScrollView.contentInset = insets
+            drawerScrollView.scrollIndicatorInsets = insets // (usefull if visible..)
         }
 
         let lowestStop = getStopList().min() ?? 0
