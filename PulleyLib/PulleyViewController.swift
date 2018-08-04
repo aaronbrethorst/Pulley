@@ -8,8 +8,6 @@
 
 import UIKit
 
-// swiftlint:disable
-
 /**
  *  The base delegate protocol for Pulley delegates.
  */
@@ -564,23 +562,6 @@ public final class PulleyViewController: UIViewController, PulleyDrawerViewContr
         super.init(coder: aDecoder)
     }
 
-    // MARK: - Feedback Generator
-
-    /// The feedback generator to use for drawer position changes.
-    private var feedbackGenerator: UIImpactFeedbackGenerator?
-
-    public func prepareFeedbackGenerator() {
-        if feedbackGenerator == nil {
-            feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
-        }
-
-        feedbackGenerator?.prepare()
-    }
-
-    public func triggerFeedbackGenerator() {
-        feedbackGenerator?.impactOccurred()
-    }
-
     /// Bounce the drawer to get user attention. Note: Only works in .bottomDrawer display mode and when the drawer is in .collapsed or .partiallyRevealed position.
     ///
     /// - Parameters:
@@ -774,13 +755,7 @@ extension PulleyViewController {
         setNeedsSupportedDrawerPositionsUpdate()
     }
 
-    override public func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        feedbackGenerator = nil
-    }
-
-    override public func viewDidLayoutSubviews() {
+    override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         // Make sure our view controller views are subviews of the right view (Resolves #21 issue with changing the presentation context)
@@ -1092,14 +1067,10 @@ extension PulleyViewController {
             return
         }
 
-        prepareFeedbackGenerator()
-
         drawerPosition = position
 
         let stopToMoveTo = calculateStopToMoveTo(drawerPosition: drawerPosition)
         let lowestStop = getStopList().min() ?? 0
-
-        triggerFeedbackGenerator()
 
         if animated && view.window != nil {
             isAnimatingDrawerPosition = true
@@ -1344,7 +1315,7 @@ extension PulleyViewController {
 
         if supportedPositions.contains(.open) {
             // Layout scrollview
-            drawerScrollView.frame = CGRect(x: pulleySafeAreaInsets.left + panelInsetLeft, y: panelInsetTop + pulleySafeAreaInsets.top, width: panelWidth, height: heightOfOpenDrawer)
+            drawerScrollView.frame = CGRect(x: pulleySafeAreaInsets.left + panelInsetLeft, y: panelInsetTop + pulleySafeAreaInsets.top, width: panelWidth, height: heightOfOpenDrawer - panelInsetTop)
         }
         else {
             // Layout scrollview
