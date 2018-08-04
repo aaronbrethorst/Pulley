@@ -796,6 +796,9 @@ extension PulleyViewController {
         drawerContentContainer.transform = drawerScrollView.transform
         drawerShadowView.transform = drawerScrollView.transform
 
+        let lowestStop = getStopList().min() ?? 0
+        callDelegateDrawerChangedDistanceFromBottom(distance: drawerScrollView.contentOffset.y + lowestStop, bottomSafeArea: pulleySafeAreaInsets.bottom)
+
         maskBackgroundDimmingView()
         setDrawerPosition(position: drawerPosition, animated: false)
     }
